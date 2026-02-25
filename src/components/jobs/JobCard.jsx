@@ -1,4 +1,9 @@
+import { memo } from "react";
+import { getScoreBand } from "../../utils/matchScore";
+
 function JobCard({ job, isSaved, onView, onSave }) {
+  const scoreBand = getScoreBand(job.matchScore || 0);
+
   return (
     <article className="job-card">
       <header className="job-card__header">
@@ -6,7 +11,10 @@ function JobCard({ job, isSaved, onView, onSave }) {
           <h2 className="job-card__title">{job.title}</h2>
           <p className="job-card__company">{job.company}</p>
         </div>
-        <span className="job-card__source">{job.source}</span>
+        <div className="job-card__header-badges">
+          <span className={`job-score-badge job-score-badge--${scoreBand}`}>Match {job.matchScore || 0}</span>
+          <span className="job-card__source">{job.source}</span>
+        </div>
       </header>
 
       <div className="job-card__meta">
@@ -32,4 +40,4 @@ function JobCard({ job, isSaved, onView, onSave }) {
   );
 }
 
-export default JobCard;
+export default memo(JobCard);

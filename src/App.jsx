@@ -4,6 +4,8 @@ import { jobs } from "./data/jobs";
 import AppLayout from "./layouts/AppLayout";
 import DashboardPage from "./pages/DashboardPage";
 import SavedJobsPage from "./pages/SavedJobsPage";
+import SettingsPage from "./pages/SettingsPage";
+import { getPreferences, savePreferences } from "./utils/preferences";
 import { getSavedJobIds, toggleSavedJob } from "./utils/savedJobs";
 
 const NAV_LINKS = [
@@ -34,13 +36,16 @@ function normalizePathname(pathname) {
 function App() {
   const [currentPath, setCurrentPath] = useState(() => normalizePathname(window.location.pathname));
   const [savedJobIds, setSavedJobIds] = useState([]);
+  const [preferences, setPreferences] = useState(null);
 
   useEffect(() => {
     setSavedJobIds(getSavedJobIds());
+    setPreferences(getPreferences());
 
     const handlePopState = () => {
       setCurrentPath(normalizePathname(window.location.pathname));
       setSavedJobIds(getSavedJobIds());
+      setPreferences(getPreferences());
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -63,17 +68,44 @@ function App() {
     setSavedJobIds(nextSavedJobIds);
   };
 
+  const handleSavePreferences = (nextPreferences) => {
+    const saved = savePreferences(nextPreferences);
+    setPreferences(saved);
+  };
+
+  const locationOptions = useMemo(
+    () => [...new Set(jobs.map((job) => job.location))].sort((a, b) => a.localeCompare(b)),
+    []
+  );
+
   const routeContent = (() => {
     if (!isKnownRoute) {
       return <RoutePlaceholder title="Page Not Found" subtitle="The page you are looking for does not exist." />;
     }
 
     if (currentPath === "/dashboard") {
-      return <DashboardPage jobs={jobs} savedJobIds={savedJobIds} onToggleSave={handleToggleSave} />;
+      return (
+        <DashboardPage
+          jobs={jobs}
+          savedJobIds={savedJobIds}
+          preferences={preferences}
+          onToggleSave={handleToggleSave}
+        />
+      );
     }
 
     if (currentPath === "/saved") {
       return <SavedJobsPage jobs={jobs} savedJobIds={savedJobIds} onToggleSave={handleToggleSave} />;
+    }
+
+    if (currentPath === "/settings") {
+      return (
+        <SettingsPage
+          locations={locationOptions}
+          preferences={preferences}
+          onSavePreferences={handleSavePreferences}
+        />
+      );
     }
 
     return <RoutePlaceholder title={ROUTE_TITLES[currentPath]} subtitle="This section will be built in the next step." />;

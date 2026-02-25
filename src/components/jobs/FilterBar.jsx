@@ -5,13 +5,15 @@ function FilterBar({
   experience,
   source,
   sort,
+  showOnlyMatches,
   locations,
   onKeywordChange,
   onLocationChange,
   onModeChange,
   onExperienceChange,
   onSourceChange,
-  onSortChange
+  onSortChange,
+  onShowOnlyMatchesChange
 }) {
   return (
     <section className="filter-bar" aria-label="Job filters">
@@ -73,9 +75,18 @@ function FilterBar({
         <span>Sort</span>
         <select value={sort} onChange={(event) => onSortChange(event.target.value)}>
           <option value="latest">Latest</option>
-          <option value="oldest">Oldest</option>
-          <option value="company">Company A-Z</option>
+          <option value="matchScore">Match Score</option>
+          <option value="salary">Salary</option>
         </select>
+      </label>
+
+      <label className="filter-bar__toggle">
+        <input
+          type="checkbox"
+          checked={showOnlyMatches}
+          onChange={(event) => onShowOnlyMatchesChange(event.target.checked)}
+        />
+        <span>Show only jobs above my threshold</span>
       </label>
     </section>
   );
