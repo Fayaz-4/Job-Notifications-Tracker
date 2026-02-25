@@ -1,0 +1,26 @@
+﻿:root {
+  --color-bg: #F7F6F3;
+  --color-text: #111111;
+  --color-accent: #8B0000;
+  --color-success: #5A6F5A;
+  --color-warning: #8A6B2E;
+
+  --radius: 8px;
+
+  --space-8: 8px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-40: 40px;
+  --space-64: 64px;
+
+  --font-heading: "Iowan Old Style", "Times New Roman", serif;
+  --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+  --text-body-size: 16px;
+  --text-body-line: 1.7;
+  --text-heading-line: 1.2;
+
+  --transition-fast: 180ms ease-in-out;
+  --border-subtle: 1px solid rgba(17, 17, 17, 0.2);
+  --border-strong: 1px solid rgba(17, 17, 17, 0.4);
+}
