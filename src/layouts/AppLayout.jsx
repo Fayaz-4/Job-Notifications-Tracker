@@ -1,19 +1,10 @@
-﻿import ContextHeader from "../components/ContextHeader";
-import PrimaryWorkspace from "../components/PrimaryWorkspace";
-import ProofFooter from "../components/ProofFooter";
-import SecondaryPanel from "../components/SecondaryPanel";
-import TopBar from "../components/TopBar";
+import TopNavigation from "../components/TopNavigation";
 
-function AppLayout() {
+function AppLayout({ navLinks, currentPath, onNavigate, children }) {
   return (
-    <main className="app-shell">
-      <TopBar />
-      <ContextHeader />
-      <section className="workspace">
-        <PrimaryWorkspace />
-        <SecondaryPanel />
-      </section>
-      <ProofFooter />
+    <main className="route-shell">
+      <TopNavigation navLinks={navLinks} currentPath={currentPath} onNavigate={onNavigate} />
+      <section className="route-content">{children}</section>
     </main>
   );
 }

@@ -230,4 +230,125 @@ textarea {
   }
 }
 
+.route-shell {
+  width: min(1200px, 100% - (var(--space-40) * 2));
+  margin: var(--space-40) auto;
+  border: var(--border-subtle);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.route-nav {
+  padding: var(--space-24);
+  border-bottom: var(--border-subtle);
+}
+
+.route-nav__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-24);
+}
+
+.route-nav__brand {
+  color: var(--color-text);
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-size: 24px;
+  line-height: 1.3;
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
+}
+
+.route-nav__desktop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-24);
+}
+
+.route-nav__link {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 1.5;
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
+}
+
+.route-nav__link:hover {
+  color: var(--color-text);
+}
+
+.route-nav__link--active {
+  border-bottom-color: var(--color-accent);
+}
+
+.route-nav__menu-button {
+  display: none;
+  border: var(--border-subtle);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-text);
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.route-nav__mobile-panel {
+  margin-top: var(--space-16);
+  padding-top: var(--space-16);
+  border-top: var(--border-subtle);
+  display: grid;
+  gap: var(--space-16);
+}
+
+.route-content {
+  padding: var(--space-64) var(--space-24);
+}
+
+.route-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.route-page__title {
+  font-size: clamp(44px, 8vw, 72px);
+  margin-bottom: var(--space-16);
+}
+
+.route-page__subtitle {
+  color: rgba(17, 17, 17, 0.62);
+  max-width: 720px;
+}
+
+@media (max-width: 900px) {
+  .route-shell {
+    width: calc(100% - (var(--space-16) * 2));
+    margin: var(--space-16) auto;
+  }
+
+  .route-nav {
+    padding: var(--space-16);
+  }
+
+  .route-content {
+    padding: var(--space-40) var(--space-16);
+  }
+}
+
+@media (max-width: 768px) {
+  .route-nav__desktop {
+    display: none;
+  }
+
+  .route-nav__menu-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .route-nav__brand {
+    font-size: 22px;
+  }
+}
+
 
