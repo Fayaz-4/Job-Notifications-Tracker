@@ -505,6 +505,57 @@ textarea {
   flex-wrap: wrap;
 }
 
+.job-card__status-row {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.job-status-badge {
+  justify-self: start;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 13px;
+  border: 1px solid transparent;
+}
+
+.job-status-badge--neutral {
+  color: #2f3f56;
+  border-color: rgba(47, 63, 86, 0.35);
+  background: rgba(132, 156, 190, 0.14);
+}
+
+.job-status-badge--applied {
+  color: #174a89;
+  border-color: rgba(23, 74, 137, 0.42);
+  background: rgba(62, 132, 212, 0.15);
+}
+
+.job-status-badge--rejected {
+  color: #8b1f24;
+  border-color: rgba(139, 31, 36, 0.45);
+  background: rgba(196, 64, 71, 0.14);
+}
+
+.job-status-badge--selected {
+  color: #124a26;
+  border-color: rgba(18, 74, 38, 0.45);
+  background: rgba(33, 154, 74, 0.16);
+}
+
+.job-status-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.job-status-action {
+  border: var(--border-subtle);
+  border-radius: var(--radius);
+  background: transparent;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
 .jobs-button {
   border-radius: var(--radius);
   padding: 8px 14px;
@@ -667,6 +718,24 @@ textarea {
   padding-top: var(--space-16);
 }
 
+.digest-empty-update {
+  color: rgba(17, 17, 17, 0.68);
+}
+
+.toast-stack {
+  position: fixed;
+  right: var(--space-24);
+  bottom: var(--space-24);
+  z-index: 30;
+}
+
+.toast {
+  border: var(--border-subtle);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.96);
+  padding: 10px 14px;
+}
+
 .job-modal-overlay {
   position: fixed;
   inset: 0;
@@ -750,6 +819,11 @@ textarea {
 
   .job-modal__header {
     flex-direction: column;
+  }
+
+  .toast-stack {
+    right: var(--space-16);
+    bottom: var(--space-16);
   }
 }
 

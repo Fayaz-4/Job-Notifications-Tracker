@@ -10,7 +10,7 @@ function getTodayLabel() {
   });
 }
 
-function DigestPage({ jobs, preferences }) {
+function DigestPage({ jobs, preferences, statusUpdates }) {
   const [digest, setDigest] = useState(null);
   const [copyStatus, setCopyStatus] = useState("");
 
@@ -144,6 +144,26 @@ function DigestPage({ jobs, preferences }) {
           ) : null}
         </>
       )}
+
+      <article className="digest-card">
+        <header className="digest-card__header">
+          <h2>Recent Status Updates</h2>
+        </header>
+        {statusUpdates.length === 0 ? (
+          <p className="digest-empty-update">No recent status updates.</p>
+        ) : (
+          <div className="digest-list">
+            {statusUpdates.map((update) => (
+              <section key={update.id} className="digest-item">
+                <h3>{update.title}</h3>
+                <p>{update.company}</p>
+                <p>Status: {update.status}</p>
+                <p>{new Date(update.changedAt).toLocaleString()}</p>
+              </section>
+            ))}
+          </div>
+        )}
+      </article>
     </section>
   );
 }

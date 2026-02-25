@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import RoutePlaceholder from "./components/RoutePlaceholder";
+import Toast from "./components/ui/Toast";
 import { jobs } from "./data/jobs";
 import AppLayout from "./layouts/AppLayout";
 import DashboardPage from "./pages/DashboardPage";
 import DigestPage from "./pages/DigestPage";
 import SavedJobsPage from "./pages/SavedJobsPage";
 import SettingsPage from "./pages/SettingsPage";
+import { getDefaultStatus, getStatusUpdates, readStatusMap, updateJobStatus } from "./utils/jobStatus";
 import { getPreferences, savePreferences } from "./utils/preferences";
 import { getSavedJobIds, toggleSavedJob } from "./utils/savedJobs";
 
@@ -38,15 +40,22 @@ function App() {
   const [currentPath, setCurrentPath] = useState(() => normalizePathname(window.location.pathname));
   const [savedJobIds, setSavedJobIds] = useState([]);
   const [preferences, setPreferences] = useState(null);
+  const [statusMap, setStatusMap] = useState({});
+  const [statusUpdates, setStatusUpdates] = useState([]);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     setSavedJobIds(getSavedJobIds());
     setPreferences(getPreferences());
+    setStatusMap(readStatusMap());
+    setStatusUpdates(getStatusUpdates());
 
     const handlePopState = () => {
       setCurrentPath(normalizePathname(window.location.pathname));
       setSavedJobIds(getSavedJobIds());
       setPreferences(getPreferences());
+      setStatusMap(readStatusMap());
+      setStatusUpdates(getStatusUpdates());
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -74,6 +83,22 @@ function App() {
     setPreferences(saved);
   };
 
+  const handleStatusChange = (job, nextStatus) => {
+    const previous = statusMap[job.id] || getDefaultStatus();
+    if (previous === nextStatus) {
+      return;
+    }
+
+    const next = updateJobStatus({ statusMap, job, status: nextStatus });
+    setStatusMap(next.statusMap);
+    setStatusUpdates(next.updates.slice(0, 10));
+
+    if (nextStatus !== "Not Applied") {
+      setToastMessage(`Status updated: ${nextStatus}`);
+      window.setTimeout(() => setToastMessage(""), 2400);
+    }
+  };
+
   const locationOptions = useMemo(
     () => [...new Set(jobs.map((job) => job.location))].sort((a, b) => a.localeCompare(b)),
     []
@@ -90,17 +115,27 @@ function App() {
           jobs={jobs}
           savedJobIds={savedJobIds}
           preferences={preferences}
+          statusMap={statusMap}
           onToggleSave={handleToggleSave}
+          onStatusChange={handleStatusChange}
         />
       );
     }
 
     if (currentPath === "/saved") {
-      return <SavedJobsPage jobs={jobs} savedJobIds={savedJobIds} onToggleSave={handleToggleSave} />;
+      return (
+        <SavedJobsPage
+          jobs={jobs}
+          savedJobIds={savedJobIds}
+          statusMap={statusMap}
+          onToggleSave={handleToggleSave}
+          onStatusChange={handleStatusChange}
+        />
+      );
     }
 
     if (currentPath === "/digest") {
-      return <DigestPage jobs={jobs} preferences={preferences} />;
+      return <DigestPage jobs={jobs} preferences={preferences} statusUpdates={statusUpdates} />;
     }
 
     if (currentPath === "/settings") {
@@ -117,9 +152,12 @@ function App() {
   })();
 
   return (
-    <AppLayout navLinks={NAV_LINKS} currentPath={currentPath} onNavigate={handleNavigate}>
-      {routeContent}
-    </AppLayout>
+    <>
+      <AppLayout navLinks={NAV_LINKS} currentPath={currentPath} onNavigate={handleNavigate}>
+        {routeContent}
+      </AppLayout>
+      <Toast message={toastMessage} />
+    </>
   );
 }
 

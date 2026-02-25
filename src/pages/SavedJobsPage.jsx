@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import JobCard from "../components/jobs/JobCard";
 import JobModal from "../components/jobs/JobModal";
+import { getJobStatus } from "../utils/jobStatus";
 
-function SavedJobsPage({ jobs, savedJobIds, onToggleSave }) {
+function SavedJobsPage({ jobs, savedJobIds, statusMap, onToggleSave, onStatusChange }) {
   const [selectedJob, setSelectedJob] = useState(null);
 
   const savedJobs = useMemo(() => {
@@ -31,8 +32,10 @@ function SavedJobsPage({ jobs, savedJobIds, onToggleSave }) {
               key={job.id}
               job={job}
               isSaved={savedSet.has(job.id)}
+              status={getJobStatus(statusMap, job.id)}
               onView={setSelectedJob}
               onSave={onToggleSave}
+              onStatusChange={onStatusChange}
             />
           ))}
         </div>

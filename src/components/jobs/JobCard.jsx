@@ -1,8 +1,25 @@
 import { memo } from "react";
 import { getScoreBand } from "../../utils/matchScore";
 
-function JobCard({ job, isSaved, onView, onSave }) {
+function getStatusTone(status) {
+  if (status === "Applied") {
+    return "applied";
+  }
+
+  if (status === "Rejected") {
+    return "rejected";
+  }
+
+  if (status === "Selected") {
+    return "selected";
+  }
+
+  return "neutral";
+}
+
+function JobCard({ job, isSaved, status, onView, onSave, onStatusChange }) {
   const scoreBand = getScoreBand(job.matchScore || 0);
+  const statusTone = getStatusTone(status);
 
   return (
     <article className="job-card">
@@ -23,6 +40,24 @@ function JobCard({ job, isSaved, onView, onSave }) {
         <p>{job.experience}</p>
         <p>{job.salaryRange}</p>
         <p>{job.postedDaysAgo === 0 ? "Today" : `${job.postedDaysAgo} days ago`}</p>
+      </div>
+
+      <div className="job-card__status-row">
+        <span className={`job-status-badge job-status-badge--${statusTone}`}>{status}</span>
+        <div className="job-status-group">
+          <button type="button" className="job-status-action" onClick={() => onStatusChange(job, "Not Applied")}>
+            Not Applied
+          </button>
+          <button type="button" className="job-status-action" onClick={() => onStatusChange(job, "Applied")}>
+            Applied
+          </button>
+          <button type="button" className="job-status-action" onClick={() => onStatusChange(job, "Rejected")}>
+            Rejected
+          </button>
+          <button type="button" className="job-status-action" onClick={() => onStatusChange(job, "Selected")}>
+            Selected
+          </button>
+        </div>
       </div>
 
       <footer className="job-card__actions">

@@ -3,13 +3,15 @@ import FilterBar from "../components/jobs/FilterBar";
 import JobCard from "../components/jobs/JobCard";
 import JobModal from "../components/jobs/JobModal";
 import { calculateMatchScore, extractSalaryValue } from "../utils/matchScore";
+import { getJobStatus } from "../utils/jobStatus";
 
-function DashboardPage({ jobs, savedJobIds, preferences, onToggleSave }) {
+function DashboardPage({ jobs, savedJobIds, preferences, statusMap, onToggleSave, onStatusChange }) {
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
   const [mode, setMode] = useState("");
   const [experience, setExperience] = useState("");
   const [source, setSource] = useState("");
+  const [status, setStatus] = useState("");
   const [sort, setSort] = useState("latest");
   const [showOnlyMatches, setShowOnlyMatches] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -42,9 +44,11 @@ function DashboardPage({ jobs, savedJobIds, preferences, onToggleSave }) {
       const modeMatch = !mode || job.mode === mode;
       const experienceMatch = !experience || job.experience === experience;
       const sourceMatch = !source || job.source === source;
+      const jobStatus = getJobStatus(statusMap, job.id);
+      const statusMatch = !status || jobStatus === status;
       const thresholdMatch = !showOnlyMatches || job.matchScore >= (preferences?.minMatchScore ?? 40);
 
-      return keywordMatch && locationMatch && modeMatch && experienceMatch && sourceMatch && thresholdMatch;
+      return keywordMatch && locationMatch && modeMatch && experienceMatch && sourceMatch && statusMatch && thresholdMatch;
     });
 
     return filtered.sort((a, b) => {
@@ -58,7 +62,7 @@ function DashboardPage({ jobs, savedJobIds, preferences, onToggleSave }) {
 
       return a.postedDaysAgo - b.postedDaysAgo;
     });
-  }, [experience, jobsWithScores, keyword, location, mode, preferences?.minMatchScore, showOnlyMatches, sort, source]);
+  }, [experience, jobsWithScores, keyword, location, mode, preferences?.minMatchScore, showOnlyMatches, sort, source, status, statusMap]);
 
   const savedSet = useMemo(() => new Set(savedJobIds), [savedJobIds]);
   const handleView = useCallback((job) => setSelectedJob(job), []);
@@ -81,6 +85,7 @@ function DashboardPage({ jobs, savedJobIds, preferences, onToggleSave }) {
         mode={mode}
         experience={experience}
         source={source}
+        status={status}
         sort={sort}
         showOnlyMatches={showOnlyMatches}
         locations={locationOptions}
@@ -89,6 +94,7 @@ function DashboardPage({ jobs, savedJobIds, preferences, onToggleSave }) {
         onModeChange={setMode}
         onExperienceChange={setExperience}
         onSourceChange={setSource}
+        onStatusChange={setStatus}
         onSortChange={setSort}
         onShowOnlyMatchesChange={setShowOnlyMatches}
       />
@@ -100,7 +106,15 @@ function DashboardPage({ jobs, savedJobIds, preferences, onToggleSave }) {
       ) : (
         <div className="jobs-grid">
           {filteredJobs.map((job) => (
-            <JobCard key={job.id} job={job} isSaved={savedSet.has(job.id)} onView={handleView} onSave={onToggleSave} />
+            <JobCard
+              key={job.id}
+              job={job}
+              isSaved={savedSet.has(job.id)}
+              status={getJobStatus(statusMap, job.id)}
+              onView={handleView}
+              onSave={onToggleSave}
+              onStatusChange={onStatusChange}
+            />
           ))}
         </div>
       )}

@@ -4,6 +4,7 @@ function FilterBar({
   mode,
   experience,
   source,
+  status,
   sort,
   showOnlyMatches,
   locations,
@@ -12,6 +13,7 @@ function FilterBar({
   onModeChange,
   onExperienceChange,
   onSourceChange,
+  onStatusChange,
   onSortChange,
   onShowOnlyMatchesChange
 }) {
@@ -68,6 +70,17 @@ function FilterBar({
           <option value="LinkedIn">LinkedIn</option>
           <option value="Naukri">Naukri</option>
           <option value="Indeed">Indeed</option>
+        </select>
+      </label>
+
+      <label className="filter-bar__field">
+        <span>Status</span>
+        <select value={status} onChange={(event) => onStatusChange(event.target.value)}>
+          <option value="">All</option>
+          <option value="Not Applied">Not Applied</option>
+          <option value="Applied">Applied</option>
+          <option value="Rejected">Rejected</option>
+          <option value="Selected">Selected</option>
         </select>
       </label>
 
