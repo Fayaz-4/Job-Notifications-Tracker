@@ -722,6 +722,35 @@ textarea {
   color: rgba(17, 17, 17, 0.68);
 }
 
+.test-checklist {
+  border: var(--border-subtle);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.45);
+  padding: var(--space-24);
+  display: grid;
+  gap: var(--space-16);
+}
+
+.test-checklist__item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-16);
+  align-items: center;
+}
+
+.test-checklist__item input {
+  accent-color: var(--color-accent);
+}
+
+.test-checklist__hint {
+  border: var(--border-subtle);
+  border-radius: var(--radius);
+  background: transparent;
+  padding: 4px 10px;
+  cursor: help;
+  color: rgba(17, 17, 17, 0.72);
+}
+
 .toast-stack {
   position: fixed;
   right: var(--space-24);
@@ -824,6 +853,15 @@ textarea {
   .toast-stack {
     right: var(--space-16);
     bottom: var(--space-16);
+  }
+
+  .test-checklist__item {
+    grid-template-columns: auto 1fr;
+  }
+
+  .test-checklist__hint {
+    grid-column: 2;
+    justify-self: start;
   }
 }
 

@@ -6,10 +6,13 @@ import AppLayout from "./layouts/AppLayout";
 import DashboardPage from "./pages/DashboardPage";
 import DigestPage from "./pages/DigestPage";
 import SavedJobsPage from "./pages/SavedJobsPage";
+import ShipPage from "./pages/ShipPage";
 import SettingsPage from "./pages/SettingsPage";
+import TestChecklistPage from "./pages/TestChecklistPage";
 import { getDefaultStatus, getStatusUpdates, readStatusMap, updateJobStatus } from "./utils/jobStatus";
 import { getPreferences, savePreferences } from "./utils/preferences";
 import { getSavedJobIds, toggleSavedJob } from "./utils/savedJobs";
+import { TEST_ITEMS, getPassedCount, readTestStatus, resetTestStatus, writeTestStatus } from "./utils/testChecklist";
 
 const NAV_LINKS = [
   { label: "Dashboard", path: "/dashboard" },
@@ -25,7 +28,9 @@ const ROUTE_TITLES = {
   "/settings": "Settings",
   "/saved": "Saved",
   "/digest": "Digest",
-  "/proof": "Proof"
+  "/proof": "Proof",
+  "/jt/07-test": "Test Checklist",
+  "/jt/08-ship": "Ship"
 };
 
 function normalizePathname(pathname) {
@@ -43,12 +48,14 @@ function App() {
   const [statusMap, setStatusMap] = useState({});
   const [statusUpdates, setStatusUpdates] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
+  const [testStatus, setTestStatus] = useState({});
 
   useEffect(() => {
     setSavedJobIds(getSavedJobIds());
     setPreferences(getPreferences());
     setStatusMap(readStatusMap());
     setStatusUpdates(getStatusUpdates());
+    setTestStatus(readTestStatus());
 
     const handlePopState = () => {
       setCurrentPath(normalizePathname(window.location.pathname));
@@ -56,6 +63,7 @@ function App() {
       setPreferences(getPreferences());
       setStatusMap(readStatusMap());
       setStatusUpdates(getStatusUpdates());
+      setTestStatus(readTestStatus());
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -104,6 +112,20 @@ function App() {
     []
   );
 
+  const passedTests = useMemo(() => getPassedCount(testStatus), [testStatus]);
+  const allTestsPassed = passedTests === TEST_ITEMS.length;
+
+  const handleToggleTestItem = (itemId) => {
+    const next = { ...testStatus, [itemId]: !Boolean(testStatus[itemId]) };
+    setTestStatus(next);
+    writeTestStatus(next);
+  };
+
+  const handleResetTestStatus = () => {
+    const reset = resetTestStatus();
+    setTestStatus(reset);
+  };
+
   const routeContent = (() => {
     if (!isKnownRoute) {
       return <RoutePlaceholder title="Page Not Found" subtitle="The page you are looking for does not exist." />;
@@ -146,6 +168,20 @@ function App() {
           onSavePreferences={handleSavePreferences}
         />
       );
+    }
+
+    if (currentPath === "/jt/07-test") {
+      return (
+        <TestChecklistPage
+          testStatus={testStatus}
+          onToggleItem={handleToggleTestItem}
+          onReset={handleResetTestStatus}
+        />
+      );
+    }
+
+    if (currentPath === "/jt/08-ship") {
+      return <ShipPage isUnlocked={allTestsPassed} />;
     }
 
     return <RoutePlaceholder title={ROUTE_TITLES[currentPath]} subtitle="This section will be built in the next step." />;
