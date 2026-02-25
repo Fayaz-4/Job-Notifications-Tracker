@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import RoutePlaceholder from "./components/RoutePlaceholder";
+import { jobs } from "./data/jobs";
 import AppLayout from "./layouts/AppLayout";
+import DashboardPage from "./pages/DashboardPage";
+import SavedJobsPage from "./pages/SavedJobsPage";
+import { getSavedJobIds, toggleSavedJob } from "./utils/savedJobs";
 
 const NAV_LINKS = [
   { label: "Dashboard", path: "/dashboard" },
@@ -29,10 +33,14 @@ function normalizePathname(pathname) {
 
 function App() {
   const [currentPath, setCurrentPath] = useState(() => normalizePathname(window.location.pathname));
+  const [savedJobIds, setSavedJobIds] = useState([]);
 
   useEffect(() => {
+    setSavedJobIds(getSavedJobIds());
+
     const handlePopState = () => {
       setCurrentPath(normalizePathname(window.location.pathname));
+      setSavedJobIds(getSavedJobIds());
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -50,13 +58,30 @@ function App() {
     setCurrentPath(nextPath);
   };
 
+  const handleToggleSave = (jobId) => {
+    const nextSavedJobIds = toggleSavedJob(jobId);
+    setSavedJobIds(nextSavedJobIds);
+  };
+
+  const routeContent = (() => {
+    if (!isKnownRoute) {
+      return <RoutePlaceholder title="Page Not Found" subtitle="The page you are looking for does not exist." />;
+    }
+
+    if (currentPath === "/dashboard") {
+      return <DashboardPage jobs={jobs} savedJobIds={savedJobIds} onToggleSave={handleToggleSave} />;
+    }
+
+    if (currentPath === "/saved") {
+      return <SavedJobsPage jobs={jobs} savedJobIds={savedJobIds} onToggleSave={handleToggleSave} />;
+    }
+
+    return <RoutePlaceholder title={ROUTE_TITLES[currentPath]} subtitle="This section will be built in the next step." />;
+  })();
+
   return (
     <AppLayout navLinks={NAV_LINKS} currentPath={currentPath} onNavigate={handleNavigate}>
-      {isKnownRoute ? (
-        <RoutePlaceholder title={ROUTE_TITLES[currentPath]} subtitle="This section will be built in the next step." />
-      ) : (
-        <RoutePlaceholder title="Page Not Found" subtitle="The page you are looking for does not exist." />
-      )}
+      {routeContent}
     </AppLayout>
   );
 }
