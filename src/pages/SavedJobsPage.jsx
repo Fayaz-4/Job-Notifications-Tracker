@@ -44,3 +44,4 @@ function SavedJobsPage({ jobs, savedJobIds, onToggleSave }) {
 }
 
 export default SavedJobsPage;
+

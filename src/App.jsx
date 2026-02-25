@@ -3,6 +3,7 @@ import RoutePlaceholder from "./components/RoutePlaceholder";
 import { jobs } from "./data/jobs";
 import AppLayout from "./layouts/AppLayout";
 import DashboardPage from "./pages/DashboardPage";
+import DigestPage from "./pages/DigestPage";
 import SavedJobsPage from "./pages/SavedJobsPage";
 import SettingsPage from "./pages/SettingsPage";
 import { getPreferences, savePreferences } from "./utils/preferences";
@@ -96,6 +97,10 @@ function App() {
 
     if (currentPath === "/saved") {
       return <SavedJobsPage jobs={jobs} savedJobIds={savedJobIds} onToggleSave={handleToggleSave} />;
+    }
+
+    if (currentPath === "/digest") {
+      return <DigestPage jobs={jobs} preferences={preferences} />;
     }
 
     if (currentPath === "/settings") {
